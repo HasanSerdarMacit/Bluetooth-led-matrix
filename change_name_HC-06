@@ -1,0 +1,49 @@
+#include <SoftwareSerial.h>
+SoftwareSerial hcSerial(10, 11);  
+// (Arduinoda 10 nolu pin RX olarak yapılandırılırken Bluetooth modülüne 
+//  bağlanırken müdülün TX bacağına bağlanır. Arduinoda 11 nolu pin TX olarak 
+//  yapılandırılır ve jumper ile bu bacak modülün RX pinine bağlanır.
+
+String fromPC="";
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600); //USB-PC arası iletişim hızı 9600 baud-rate
+  hcSerial.begin(9600);//Arduino-HC06 arası iletişim hızı 9600 baud-rate
+
+  Serial.println("HC-06 AT KOMUTU PROGRAMI");
+  Serial.println("---REFERANS TABLOSU---");
+  Serial.println("AT"); //bağlantıyı kontrol et
+  Serial.println("AT-VERSION"); //versiyonu göster
+  Serial.println("AT+NAME");//modül ismini göster
+  Serial.println("AT+NAME=XXXXX");//ismi XXXXX'e değiştir
+  Serial.println("AT+PIN=1111");//şifreyi 4 haneli 1111 ile değiştir
+  Serial.println("AT+BAUD=1");//iletişim hızı baud rate 1200 yap
+  Serial.println("  BAUD1 = 1200");
+  Serial.println("  BAUD1 = 2400");
+  Serial.println("  BAUD1 = 4800");
+  Serial.println("  BAUD1 = 9600");
+  Serial.println("  BAUD1 = 19200");
+  Serial.println("  BAUD1 = 38400");
+  Serial.println("  BAUD1 = 57600");
+  Serial.println("  BAUD1 = 115200");
+  
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if (hcSerial.available())  { //bluetooth modül ulaşılabilir ise verdiği cevabı oku ve ekrana yaz
+      while (hcSerial.available())  {
+        Serial.print((char)hcSerial.read());
+        
+    }
+  }
+  if (Serial.available())   { //PC'den gelen komutları oku
+    delay(10);
+    fromPC = (char)Serial.read();
+
+    hcSerial.print(fromPC); //modülün cevabını göster
+    Serial.print(fromPC); 
+      
+    }
+}
